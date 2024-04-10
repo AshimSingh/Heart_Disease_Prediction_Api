@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import sys
+sys.setrecursionlimit(1500)
 
 # Small value to avoid division by zero
 EPSILON = np.finfo(float).eps
@@ -52,6 +54,7 @@ def get_subtable(df, node, value):
 
 # Function to build the decision tree recursively
 def build_decision_tree(df, tree=None):
+    # print(df)
     # find_entropy(df)
     Class = df.keys()[-1]
     # Get the attribute with the highest information gain
@@ -61,6 +64,7 @@ def build_decision_tree(df, tree=None):
         tree = {}
         tree[node] = {}
     for value in attValue:
+        
         # Get subset of data based on attribute value
         subtable = get_subtable(df, node, value)
         clValue, counts = np.unique(subtable['Heart_Disease'], return_counts=True)
@@ -71,6 +75,7 @@ def build_decision_tree(df, tree=None):
             # Recursively build the tree
             tree[node][value] = build_decision_tree(subtable)
     return tree
+
 
 def classify_instance(test, tree, default=None):
     attribute = next(iter(tree))

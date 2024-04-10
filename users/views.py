@@ -9,6 +9,7 @@ from .models import NewUser
 import pandas as pd
 from .ID3algorithm import build_decision_tree, classify_instance
 from .cleandata import cleandata
+from .sklearnPredictionAlgorithm import makeDecisionTree,predict
 # from .outlookprediction import build_decision_tree, classify_instance
 
 class CustomUserCreate(APIView):
@@ -58,23 +59,28 @@ class PredictionRead(APIView):
         
         
         data = pd.read_csv(r'F:\\HeartDiseasePrediction\\users\\Heart_Disease_Prediction.csv')
+        # data = pd.read_csv(r'F:\\HeartDiseasePrediction\\users\\Heart_Disease_Prediction_new.csv')
         df = cleandata(data)
-        print(df)
         decision_tree = build_decision_tree(df)
-        print(decision_tree,test_instance)
+        print(decision_tree)
+        # print(decision_tree,test_instance)
         prediction = classify_instance(test_instance, decision_tree)
-        # print ('decision is',prediction)
-        
+        print ('decision is',prediction)
+        # print(decision_tree)
         return Response({"prediction ":prediction})
+        # return Response({"hello":"ashim"})
 
 
-# class PredictionRead(APIView):
-#     permission_classes = [AllowAny]
-#     def post(self,request):
-#         test_instance = request.data
-#         df = pd.read_csv(r'F:\\HeartDiseasePrediction\\users\\tenis.csv')
-#         decision_tree = build_decision_tree(df)
-#         prediction = classify_instance(test_instance, decision_tree)
-#         print ('decision is',prediction)
-        
-#         return Response({"message":prediction,"tree":decision_tree})
+class SklearnPrediction(APIView):
+    permission_classes = [AllowAny]
+    def post(self,request):
+        test_instance = request.data
+        data = pd.read_csv(r'F:\\HeartDiseasePrediction\\users\\Heart_Disease_Prediction.csv')
+        df = cleandata(data)
+        decision_tree = makeDecisionTree(df)
+        newData = pd.DataFrame([test_instance])
+        print(test_instance,newData)
+        predction = predict(data=newData,tree=decision_tree)
+        # prediction = classify_instance(test_instance, decision_tree)
+        # return Response({"prediction ":prediction})
+        return Response({"hello":"ashim"})
